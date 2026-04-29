@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>FRANZK — Dev · Streamer · Builder</title>
+<meta name="description" content="Franzk — Desarrollador de Software freelance en Tucumán. Sistemas a medida, sitios web, overlays para streamers y automatizaciones en Python."/>
+<meta property="og:title" content="FRANZK — Dev · Streamer · Builder"/>
+<meta property="og:description" content="Desarrollador freelance, streamer y estudiante de Ingeniería en Sistemas en UTN Tucumán."/>
+<meta property="og:type" content="website"/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230a090f'/><text x='4' y='24' font-size='22'>⚔️</text></svg>"/>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --p1:#7c6af7;--p2:#a89df8;--p3:#c8bfff;
+  --g1:#1aff9c;--g2:#00e574;
+  --bg:#0a090f;--bg2:#100f17;--bg3:#16141f;
+  --text:#ede9ff;--muted:#6e6a82;
+  --pixel:1px;
+}
+
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;overflow-x:hidden}
+
+/* cursor solo en mouse real */
+@media(pointer:fine){
+  body{cursor:none}
+  #cursor,#cursor-trail{display:block}
+}
+@media(pointer:coarse){
+  #cursor,#cursor-trail{display:none}
+}
+
+#cursor{position:fixed;width:12px;height:12px;background:var(--g1);pointer-events:none;z-index:9999;image-rendering:pixelated;clip-path:polygon(0 0,100% 0,100% 60%,60% 60%,60% 100%,0 100%);transition:transform .1s,background .12s;mix-blend-mode:exclusion}
+#cursor.hover{transform:scale(2.2);background:var(--p2)}
+#cursor-trail{position:fixed;width:6px;height:6px;background:var(--p1);pointer-events:none;z-index:9998;image-rendering:pixelated;opacity:.5}
+
+/* scanlines overlay */
+body::before{
+  content:'';position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 4px);
+  pointer-events:none;z-index:1000
+}
+
+/* pixel noise bg */
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:999;opacity:.4
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:1rem 2.5rem;
+  background:rgba(10,9,15,.7);backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(124,106,247,.08);
+}
+.nav-logo{
+  font-family:'Press Start 2P',monospace;font-size:.75rem;
+  color:var(--g1);text-decoration:none;letter-spacing:.05em;
+  text-shadow:0 0 12px var(--g1);
+  animation:flicker 4s infinite
+}
+@keyframes flicker{0%,95%,100%{opacity:1}96%,98%{opacity:.6}}
+
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{
+  color:var(--muted);text-decoration:none;font-size:.78rem;
+  letter-spacing:.1em;text-transform:uppercase;
+  transition:color .15s;position:relative
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-3px;left:0;right:0;
+  height:1px;background:var(--p1);transform:scaleX(0);
+  transform-origin:left;transition:transform .2s
+}
+.nav-links a:hover{color:var(--p3)}
+.nav-links a:hover::after{transform:scaleX(1)}
+
+/* ── HAMBURGER ── */
+.nav-burger{
+  display:none;flex-direction:column;gap:5px;
+  cursor:pointer;padding:4px;border:none;background:transparent
+}
+.nav-burger span{display:block;width:22px;height:2px;background:var(--p2);transition:all .25s}
+.nav-burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-burger.open span:nth-child(2){opacity:0}
+.nav-burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* Mobile drawer */
+.mobile-menu{
+  display:none;position:fixed;inset:0;
+  background:rgba(10,9,15,.97);z-index:490;
+  flex-direction:column;justify-content:center;align-items:center;gap:2.5rem
+}
+.mobile-menu.open{display:flex}
+.mobile-menu a{
+  font-family:'Press Start 2P',monospace;font-size:.75rem;
+  color:var(--muted);text-decoration:none;letter-spacing:.12em;
+  text-transform:uppercase;transition:color .2s
+}
+.mobile-menu a:hover{color:var(--g1);text-shadow:0 0 10px var(--g1)}
+
+@media(max-width:640px){
+  .nav-links{display:none}
+  .nav-burger{display:flex}
+}
+
+/* ── HERO ── */
+#home{
+  min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;padding:7rem 2.5rem 4rem;
+  position:relative;overflow:hidden
+}
+
+/* grid de fondo sutil */
+#home::before{
+  content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(124,106,247,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(124,106,247,.04) 1px,transparent 1px);
+  background-size:40px 40px;pointer-events:none;
+}
+
+.hero-deco{
+  position:absolute;right:-80px;top:50%;transform:translateY(-50%);
+  width:420px;height:420px;opacity:.12;
+  image-rendering:pixelated;pointer-events:none
+}
+
+/* typewriter tag */
+.hero-tag{
+  display:inline-block;font-family:'Press Start 2P',monospace;
+  font-size:.55rem;color:var(--g1);letter-spacing:.12em;
+  margin-bottom:1.5rem;
+  text-shadow:0 0 8px var(--g1);
+  min-height:1.2em;
+  opacity:0;animation:fadeUp .6s .1s forwards
+}
+.hero-tag::before{content:'> '}
+.hero-tag::after{content:'▋';animation:blink .8s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+.hero-name{
+  font-family:'Press Start 2P',monospace;
+  font-size:clamp(2rem,6vw,4.2rem);
+  line-height:1.4;letter-spacing:-.01em;
+  color:var(--text);
+  text-shadow:4px 4px 0 var(--p1), 8px 8px 0 rgba(124,106,247,.2);
+  margin-bottom:.8rem;
+  position:relative;
+  opacity:0;animation:fadeUp .7s .3s forwards
+}
+
+.hero-sub{
+  font-size:1rem;color:var(--p2);font-weight:300;
+  margin-bottom:2.5rem;letter-spacing:.06em;
+  opacity:0;animation:fadeUp .7s .5s forwards
+}
+
+.hero-bio{
+  max-width:480px;color:rgba(237,233,255,.55);
+  font-size:.9rem;line-height:1.9;margin-bottom:3rem;
+  font-weight:300;
+  opacity:0;animation:fadeUp .7s .7s forwards
+}
+
+.hero-badges{
+  display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:2.5rem;
+  opacity:0;animation:fadeUp .7s .9s forwards
+}
+.badge{
+  font-family:'Press Start 2P',monospace;font-size:.5rem;
+  padding:.35rem .7rem;
+  border:1px solid;image-rendering:pixelated;
+  letter-spacing:.08em;
+  transition:transform .15s
+}
+.badge:hover{transform:translateY(-2px)}
+.badge-g{color:var(--g1);border-color:rgba(26,255,156,.25);background:rgba(26,255,156,.05)}
+.badge-p{color:var(--p2);border-color:rgba(168,157,248,.25);background:rgba(168,157,248,.05)}
+.badge-y{color:#ffd166;border-color:rgba(255,209,102,.25);background:rgba(255,209,102,.05)}
+.badge-pk{color:#ff6b9d;border-color:rgba(255,107,157,.25);background:rgba(255,107,157,.05)}
+
+.hero-cta{display:flex;gap:1rem;flex-wrap:wrap;opacity:0;animation:fadeUp .7s 1.1s forwards}
+.btn{
+  font-family:'Press Start 2P',monospace;font-size:.55rem;
+  padding:.7rem 1.2rem;text-decoration:none;
+  letter-spacing:.1em;transition:all .15s;
+  image-rendering:pixelated;display:inline-block
+}
+.btn-primary{
+  background:var(--p1);color:#fff;
+  box-shadow:4px 4px 0 rgba(124,106,247,.4)
+}
+.btn-primary:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 rgba(124,106,247,.5)}
+.btn-ghost{
+  border:1px solid var(--p1);color:var(--p2);
+  box-shadow:4px 4px 0 transparent
+}
+.btn-ghost:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--p1);color:#fff}
+
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+
+/* pixel art character decoration */
+.pixel-char{
+  font-size:2.5rem;line-height:1;
+  position:absolute;right:8%;top:50%;transform:translateY(-50%);
+  filter:drop-shadow(0 0 20px var(--p1));
+  animation:float 3s ease-in-out infinite;
+  pointer-events:none;font-style:normal
+}
+@keyframes float{0%,100%{transform:translateY(-50%)}50%{transform:translateY(calc(-50% - 12px))}}
+
+/* ── SECTION BASE ── */
+.wrap{max-width:900px;margin:0 auto;padding:5rem 2.5rem}
+
+.s-label{
+  font-family:'Press Start 2P',monospace;font-size:.55rem;
+  color:var(--g1);letter-spacing:.15em;text-transform:uppercase;
+  margin-bottom:.8rem;display:block;
+  text-shadow:0 0 6px var(--g1)
+}
+.s-title{
+  font-size:2.4rem;font-weight:700;margin-bottom:.5rem;
+  letter-spacing:-.02em;line-height:1.1
+}
+
+/* ── EXPERIENCE — HORIZONTAL TIMELINE ── */
+#experience{background:var(--bg2);overflow:hidden}
+
+/* ── EXPERIENCE — HORIZONTAL TIMELINE ── */
+#experience{background:var(--bg2);overflow:hidden}
+
+.timeline-wrap{
+  margin-top:3rem;
+  overflow-x:auto;
+  padding:0 2.5rem 1.5rem;
+  -webkit-overflow-scrolling:touch;
+}
+.timeline-wrap::-webkit-scrollbar{height:3px}
+.timeline-wrap::-webkit-scrollbar-track{background:transparent}
+.timeline-wrap::-webkit-scrollbar-thumb{background:var(--p1)}
+
+.timeline-inner{
+  display:flex;
+  align-items:stretch;
+  min-width:max-content;
+  position:relative;
+  /* altura fija: card(~120px) + conector(20px) + dot(12px) + conector(20px) + card(~120px) */
+  height:300px;
+}
+
+/* línea central horizontal */
+.timeline-inner::before{
+  content:'';
+  position:absolute;
+  left:0;right:0;
+  top:50%;transform:translateY(-50%);
+  height:2px;
+  background:linear-gradient(90deg,transparent,var(--p1) 5%,var(--g1) 50%,var(--p1) 95%,transparent);
+  z-index:0;
+}
+
+.tl-item{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  margin:0 1rem;
+  flex-shrink:0;
+  width:170px;
+}
+
+/* card arriba: ocupa la mitad superior */
+.tl-item.top .tl-card{
+  position:absolute;
+  bottom:calc(50% + 18px);
+  left:0;right:0;
+}
+/* card abajo: ocupa la mitad inferior */
+.tl-item.bottom .tl-card{
+  position:absolute;
+  top:calc(50% + 18px);
+  left:0;right:0;
+}
+
+.tl-card{
+  background:var(--bg3);
+  border:1px solid rgba(124,106,247,.14);
+  padding:.7rem .9rem;
+  transition:border-color .25s,box-shadow .2s;
+}
+.tl-item.edu .tl-card{border-color:rgba(26,255,156,.14)}
+.tl-item:hover .tl-card{border-color:rgba(124,106,247,.4);box-shadow:0 4px 16px rgba(124,106,247,.1)}
+.tl-item.edu:hover .tl-card{border-color:rgba(26,255,156,.4);box-shadow:0 4px 16px rgba(26,255,156,.08)}
+
+/* conector vertical */
+.tl-connector{
+  position:absolute;
+  left:50%;transform:translateX(-50%);
+  width:2px;
+  background:rgba(124,106,247,.2);
+  transition:background .2s;
+  z-index:1;
+}
+.tl-item.top .tl-connector{
+  bottom:50%;
+  height:18px;
+}
+.tl-item.bottom .tl-connector{
+  top:50%;
+  height:18px;
+}
+.tl-item.edu .tl-connector{background:rgba(26,255,156,.2)}
+.tl-item:hover .tl-connector{background:var(--p1)}
+.tl-item.edu:hover .tl-connector{background:var(--g1)}
+
+/* punto central */
+.tl-dot{
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:12px;height:12px;
+  border:2px solid var(--p1);
+  background:var(--bg2);
+  z-index:2;
+  transition:background .2s,transform .2s;
+}
+.tl-item:hover .tl-dot{background:var(--p1);transform:translate(-50%,-50%) scale(1.4)}
+.tl-item.edu .tl-dot{border-color:var(--g1)}
+.tl-item.edu:hover .tl-dot{background:var(--g1)}
+
+.tl-year{
+  font-family:'Press Start 2P',monospace;
+  font-size:.38rem;color:var(--p1);
+  letter-spacing:.05em;margin-bottom:.35rem;display:block;
+}
+.tl-item.edu .tl-year{color:var(--g1)}
+
+.tl-type{
+  font-family:'Press Start 2P',monospace;font-size:.33rem;
+  padding:.15rem .38rem;border:1px solid;
+  letter-spacing:.05em;display:inline-block;margin-bottom:.4rem;
+}
+.tl-item.dev .tl-type{color:var(--p2);border-color:rgba(168,157,248,.3)}
+.tl-item.edu .tl-type{color:var(--g1);border-color:rgba(26,255,156,.3)}
+
+.tl-title{font-size:.76rem;font-weight:600;line-height:1.35;color:var(--text);margin-bottom:.25rem}
+.tl-sub{font-size:.66rem;color:var(--muted);line-height:1.4;font-weight:300}
+
+.timeline-hint{
+  display:none;text-align:center;
+  font-family:'Press Start 2P',monospace;font-size:.4rem;
+  color:var(--muted);letter-spacing:.08em;margin-top:.8rem;
+  animation:blink 2s step-end infinite;
+}
+@media(max-width:768px){.timeline-hint{display:block}}
+
+/* ── PROJECTS ── */
+#projects{background:var(--bg)}
+
+/* ── Proyecto destacado ── */
+.proj-featured{
+  margin-top:3rem;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0;
+  border:1px solid rgba(124,106,247,.2);
+  background:var(--bg2);
+  position:relative;
+  overflow:hidden;
+  transition:border-color .3s;
+}
+.proj-featured:hover{border-color:rgba(124,106,247,.45)}
+
+/* borde superior degradado */
+.proj-featured::before{
+  content:'';position:absolute;
+  top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--p1),var(--g1));
+}
+
+.proj-feat-body{
+  padding:2rem 2rem 2rem 2.5rem;
+  display:flex;flex-direction:column;
+  justify-content:space-between;
+  border-right:1px solid rgba(124,106,247,.1);
+}
+.proj-feat-num{
+  font-family:'Press Start 2P',monospace;
+  font-size:.5rem;color:rgba(124,106,247,.3);
+  letter-spacing:.1em;margin-bottom:1rem;display:block;
+}
+.proj-feat-label{
+  font-family:'Press Start 2P',monospace;
+  font-size:.4rem;color:var(--g1);letter-spacing:.1em;
+  text-shadow:0 0 8px var(--g1);
+  margin-bottom:.6rem;display:block;
+}
+.proj-feat-name{
+  font-size:1.5rem;font-weight:700;
+  letter-spacing:-.02em;line-height:1.2;
+  margin-bottom:1rem;
+}
+.proj-feat-desc{
+  color:rgba(237,233,255,.5);font-size:.88rem;
+  line-height:1.8;font-weight:300;flex:1;margin-bottom:1.5rem;
+}
+.proj-feat-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.5rem}
+.proj-feat-link{
+  font-family:'Press Start 2P',monospace;font-size:.48rem;
+  color:var(--g1);text-decoration:none;letter-spacing:.08em;
+  transition:letter-spacing .2s;
+  align-self:flex-start;
+}
+.proj-feat-link:hover{letter-spacing:.14em}
+
+/* panel derecho del featured */
+.proj-feat-side{
+  padding:2rem;
+  display:flex;flex-direction:column;
+  gap:1rem;
+  background:rgba(124,106,247,.03);
+}
+.proj-feat-stat{
+  display:flex;flex-direction:column;gap:.3rem;
+  padding:.8rem 1rem;
+  border:1px solid rgba(124,106,247,.1);
+  transition:border-color .2s;
+}
+.proj-feat-stat:hover{border-color:rgba(124,106,247,.3)}
+.proj-feat-stat-label{
+  font-family:'Press Start 2P',monospace;font-size:.38rem;
+  color:var(--muted);letter-spacing:.08em;
+}
+.proj-feat-stat-val{
+  font-size:.92rem;font-weight:600;color:var(--text);
+}
+
+/* ── Grid de proyectos secundarios ── */
+.proj-grid{
+  margin-top:1.2rem;
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:1rem;
+}
+.proj-item{
+  padding:1.3rem 1.4rem;
+  border:1px solid rgba(124,106,247,.08);
+  background:var(--bg2);
+  position:relative;overflow:hidden;
+  transition:border-color .25s,transform .2s;
+  display:flex;flex-direction:column;gap:.5rem;
+}
+.proj-item::after{
+  content:'';position:absolute;
+  bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--p1),var(--g1));
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .3s;
+}
+.proj-item:hover{border-color:rgba(124,106,247,.3);transform:translateY(-2px)}
+.proj-item:hover::after{transform:scaleX(1)}
+
+.proj-num{
+  font-family:'Press Start 2P',monospace;font-size:.4rem;
+  color:rgba(124,106,247,.25);letter-spacing:.08em;
+  transition:color .2s;
+}
+.proj-item:hover .proj-num{color:var(--p1)}
+.proj-name{font-size:.95rem;font-weight:700;line-height:1.3}
+.proj-desc{color:rgba(237,233,255,.45);font-size:.82rem;line-height:1.65;font-weight:300;flex:1}
+.proj-tags{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.2rem}
+.proj-tag{
+  font-family:'Press Start 2P',monospace;font-size:.38rem;
+  padding:.2rem .45rem;color:var(--p2);
+  border:1px solid rgba(168,157,248,.18);letter-spacing:.05em;
+}
+.proj-link{
+  font-size:.75rem;color:var(--g1);text-decoration:none;
+  letter-spacing:.05em;transition:letter-spacing .2s;
+  margin-top:.3rem;align-self:flex-start;
+}
+.proj-link:hover{letter-spacing:.1em}
+
+@media(max-width:640px){
+  .proj-featured{grid-template-columns:1fr}
+  .proj-feat-body{border-right:none;border-bottom:1px solid rgba(124,106,247,.1)}
+  .proj-grid{grid-template-columns:1fr}
+}
+
+/* ── SKILLS ── */
+#skills{background:var(--bg2)}
+
+.skills-grid{
+  margin-top:3rem;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1.5rem;
+}
+
+.sk-panel{
+  background:var(--bg3);
+  border:1px solid rgba(124,106,247,.1);
+  padding:1.8rem;
+  position:relative;
+  overflow:hidden;
+}
+.sk-panel::before{
+  content:'';position:absolute;
+  top:0;left:0;right:0;height:2px;
+}
+.sk-panel.primary::before{background:linear-gradient(90deg,var(--p1),var(--g1))}
+.sk-panel.secondary::before{background:linear-gradient(90deg,var(--g1),#ffd166)}
+
+.sk-panel-label{
+  font-family:'Press Start 2P',monospace;font-size:.42rem;
+  letter-spacing:.12em;text-transform:uppercase;
+  margin-bottom:1.2rem;display:block;
+}
+.sk-panel.primary .sk-panel-label{color:var(--p2)}
+.sk-panel.secondary .sk-panel-label{color:var(--g1)}
+
+.sk-bubbles{
+  display:flex;flex-wrap:wrap;gap:.5rem;
+  margin-bottom:1.4rem;
+}
+.skill-bubble{
+  font-family:'Press Start 2P',monospace;
+  font-size:.45rem;padding:.4rem .75rem;
+  border:1px solid;letter-spacing:.06em;
+  transition:transform .15s;cursor:default;
+}
+.skill-bubble:hover{transform:translateY(-2px)}
+.sb-a{color:var(--p2);border-color:rgba(168,157,248,.3);background:rgba(168,157,248,.06)}
+.sb-b{color:var(--g1);border-color:rgba(26,255,156,.3);background:rgba(26,255,156,.06)}
+
+.sk-desc{
+  color:rgba(237,233,255,.5);
+  font-size:.86rem;line-height:1.8;font-weight:300;
+  border-top:1px solid rgba(124,106,247,.08);
+  padding-top:1rem;
+}
+
+@media(max-width:640px){.skills-grid{grid-template-columns:1fr}}
+
+/* ── CONTACT ── */
+#contact{background:var(--bg);position:relative;overflow:hidden}
+#contact::before{
+  content:'';position:absolute;
+  left:50%;top:50%;transform:translate(-50%,-50%);
+  width:600px;height:600px;
+  background:radial-gradient(circle,rgba(124,106,247,.07) 0%,transparent 70%);
+  pointer-events:none
+}
+
+.contact-inner{text-align:center;position:relative;z-index:1}
+.contact-inner .s-title{font-size:3rem;margin-bottom:1rem}
+.contact-sub{color:rgba(237,233,255,.45);font-size:.9rem;max-width:400px;margin:0 auto 2.5rem;font-weight:300}
+
+.contact-mail{
+  display:inline-block;
+  font-family:'Press Start 2P',monospace;font-size:.8rem;
+  color:var(--g1);text-decoration:none;letter-spacing:.1em;
+  text-shadow:0 0 14px rgba(26,255,156,.5);
+  border-bottom:2px solid rgba(26,255,156,.3);
+  padding-bottom:4px;margin-bottom:2.5rem;
+  transition:text-shadow .2s,border-color .2s
+}
+.contact-mail:hover{text-shadow:0 0 22px rgba(26,255,156,.8);border-color:var(--g1)}
+
+.contact-socials{display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap}
+.social-btn{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-family:'Press Start 2P',monospace;font-size:.45rem;
+  padding:.55rem .9rem;text-decoration:none;
+  border:1px solid rgba(124,106,247,.25);color:var(--muted);
+  letter-spacing:.07em;transition:all .15s;
+}
+.social-btn:hover{border-color:var(--p1);color:var(--p2);box-shadow:3px 3px 0 var(--p1)}
+.social-btn.gh:hover{border-color:var(--p2);color:var(--p2);box-shadow:3px 3px 0 var(--p2)}
+.social-btn.li:hover{border-color:#0a66c2;color:#0a66c2;box-shadow:3px 3px 0 #0a66c2}
+.social-btn.ig:hover{border-color:#e1306c;color:#e1306c;box-shadow:3px 3px 0 #e1306c}
+.social-btn.kick:hover{border-color:#53fc18;color:#53fc18;box-shadow:3px 3px 0 #53fc18}
+
+/* ── FOOTER ── */
+footer{
+  text-align:center;padding:1.5rem;
+  border-top:1px solid rgba(124,106,247,.1);
+  font-family:'Press Start 2P',monospace;font-size:.45rem;
+  color:var(--muted);letter-spacing:.1em
+}
+
+/* ── DIVIDER ── */
+.px-divider{
+  height:2px;
+  background:repeating-linear-gradient(90deg,var(--p1) 0,var(--p1) 4px,transparent 4px,transparent 8px);
+  opacity:.2
+}
+
+/* ── FADE ── */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s,transform .6s}
+.reveal.on{opacity:1;transform:translateY(0)}
+
+@media(max-width:640px){
+  nav{padding:1rem 1.2rem}
+  .nav-links{display:none}
+  .nav-burger{display:flex}
+  .wrap{padding:3.5rem 1.2rem}
+  .hero-name{font-size:1.8rem}
+  .pixel-char{display:none}
+  .proj-item{flex-direction:column;gap:1rem}
+  .skills-desc{flex-direction:column;gap:2rem}
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-trail"></div>
+
+<!-- Mobile drawer -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#home"       onclick="closeMobile()">Inicio</a>
+  <a href="#experience" onclick="closeMobile()">XP</a>
+  <a href="#projects"   onclick="closeMobile()">Proyectos</a>
+  <a href="#skills"     onclick="closeMobile()">Skills</a>
+  <a href="#contact"    onclick="closeMobile()">Contacto</a>
+</div>
+
+<nav>
+  <a href="#home" class="nav-logo">FRANZK</a>
+  <ul class="nav-links">
+    <li><a href="#home">Inicio</a></li>
+    <li><a href="#experience">XP</a></li>
+    <li><a href="#projects">Proyectos</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#contact">Contacto</a></li>
+  </ul>
+  <button class="nav-burger" id="burger" aria-label="Menú" onclick="toggleMobile()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+  <span class="s-label reveal">franzk.dev — online</span>
+  <span class="hero-tag" id="heroTag"></span>
+  <h1 class="hero-name">FRANZK</h1>
+  <p class="hero-sub">Dev · Streamer · Builder</p>
+  <p class="hero-bio">
+    Técnico Superior en Desarrollo de Software y estudiante de Ingeniería en Sistemas en UTN Tucumán.
+    Construyo software a medida para negocios — y cuando no estoy programando, estoy en vivo:
+    streamer en Twitch/Kick, gamer desde siempre. Freelance, autodidacta, siempre buildando algo.
+  </p>
+  <div class="hero-badges">
+    <span class="badge badge-p">Programador</span>
+    <span class="badge badge-g">Freelance</span>
+    <span class="badge badge-y">Estudiante UTN</span>
+    <span class="badge badge-pk">Streamer</span>
+    <span class="badge badge-g">League of Legends</span>
+  </div>
+  <div class="hero-cta">
+    <a href="#projects" class="btn btn-primary">Ver proyectos</a>
+    <a href="#contact" class="btn btn-ghost">Contacto</a>
+  </div>
+  <span class="pixel-char" aria-hidden="true">⚔️</span>
+</section>
+
+<div class="px-divider"></div>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+<div class="wrap">
+  <span class="s-label">trayectoria</span>
+  <h2 class="s-title reveal">Experiencia &amp; Estudio</h2>
+</div>
+
+<div class="timeline-wrap reveal">
+  <div class="timeline-inner">
+
+    <div class="tl-item edu top">
+      <div class="tl-card">
+        <span class="tl-year">2018 — 2024</span>
+        <span class="tl-type">EDU</span>
+        <p class="tl-title">Técnico Superior en Informática</p>
+        <p class="tl-sub">Escuela Técnica</p>
+      </div>
+      <div class="tl-connector"></div>
+      <div class="tl-dot"></div>
+    </div>
+
+    <div class="tl-item edu bottom">
+      <div class="tl-dot"></div>
+      <div class="tl-connector"></div>
+      <div class="tl-card">
+        <span class="tl-year">2020 — 2024</span>
+        <span class="tl-type">EDU</span>
+        <p class="tl-title">Tecnicatura Superior en Desarrollo de Software</p>
+        <p class="tl-sub">Completada</p>
+      </div>
+    </div>
+
+    <div class="tl-item dev top">
+      <div class="tl-card">
+        <span class="tl-year">2020 — 2026</span>
+        <span class="tl-type">DEV</span>
+        <p class="tl-title">Tutor de Programación</p>
+        <p class="tl-sub">C, C++, estructuras · UTN / Particular</p>
+      </div>
+      <div class="tl-connector"></div>
+      <div class="tl-dot"></div>
+    </div>
+
+    <div class="tl-item dev bottom">
+      <div class="tl-dot"></div>
+      <div class="tl-connector"></div>
+      <div class="tl-card">
+        <span class="tl-year">2022 — Presente</span>
+        <span class="tl-type">DEV</span>
+        <p class="tl-title">Desarrollador Freelance</p>
+        <p class="tl-sub">POS, sitios web, overlays, Python</p>
+      </div>
+    </div>
+
+    <div class="tl-item edu top">
+      <div class="tl-card">
+        <span class="tl-year">2025 — En curso</span>
+        <span class="tl-type">EDU</span>
+        <p class="tl-title">Ingeniería en Sistemas de Información</p>
+        <p class="tl-sub">UTN Tucumán</p>
+      </div>
+      <div class="tl-connector"></div>
+      <div class="tl-dot"></div>
+    </div>
+
+  </div>
+  <p class="timeline-hint">← deslizá para ver más →</p>
+</div>
+
+</section>
+
+<div class="px-divider"></div>
+
+<!-- PROJECTS -->
+<section id="projects">
+<div class="wrap">
+  <span class="s-label">builds</span>
+  <h2 class="s-title reveal">Proyectos</h2>
+
+  <!-- Proyecto estrella -->
+  <div class="proj-featured reveal">
+    <div class="proj-feat-body">
+      <div>
+        <span class="proj-feat-num">01</span>
+        <span class="proj-feat-label">★ PROYECTO DESTACADO</span>
+        <p class="proj-feat-name">Ruta 38 Repuestos — POS</p>
+        <p class="proj-feat-desc">Sistema de punto de venta para un comercio de repuestos automotrices. Gestión de ventas, caja, inventario por categorías, generación de tickets y presupuestos imprimibles.</p>
+        <div class="proj-feat-tags">
+          <span class="proj-tag">Python</span>
+          <span class="proj-tag">Pillow</span>
+          <span class="proj-tag">POS</span>
+        </div>
+      </div>
+      <a href="https://github.com/Franzk12" class="proj-feat-link" target="_blank" rel="noopener">ver en github →</a>
+    </div>
+    <div class="proj-feat-side">
+      <div class="proj-feat-stat">
+        <span class="proj-feat-stat-label">TIPO</span>
+        <span class="proj-feat-stat-val">Software de gestión</span>
+      </div>
+      <div class="proj-feat-stat">
+        <span class="proj-feat-stat-label">CLIENTE</span>
+        <span class="proj-feat-stat-val">Comercio automotriz</span>
+      </div>
+      <div class="proj-feat-stat">
+        <span class="proj-feat-stat-label">ESTADO</span>
+        <span class="proj-feat-stat-val" style="color:var(--g1)">En producción ●</span>
+      </div>
+      <div class="proj-feat-stat">
+        <span class="proj-feat-stat-label">STACK</span>
+        <span class="proj-feat-stat-val">Python · Pillow</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grid secundario -->
+  <div class="proj-grid reveal">
+
+    <div class="proj-item">
+      <span class="proj-num">02</span>
+      <p class="proj-name">Franzk — Portfolio &amp; Servicios (v2)</p>
+      <p class="proj-desc">Portafolio personal con animaciones CSS, tipografía monoespaciada y meta tags para SEO y redes sociales.</p>
+      <div class="proj-tags">
+        <span class="proj-tag">HTML</span>
+        <span class="proj-tag">CSS</span>
+        <span class="proj-tag">JS</span>
+      </div>
+      <a href="https://github.com/Franzk12" class="proj-link" target="_blank" rel="noopener">ver en github →</a>
+    </div>
+
+    <div class="proj-item">
+      <span class="proj-num">03</span>
+      <p class="proj-name">FacuTrack — Gestión de materias</p>
+      <p class="proj-desc">App para organizar la carrera universitaria. Materias, calendario, notas, grilla horaria y asistente IA integrado con Google Drive.</p>
+      <div class="proj-tags">
+        <span class="proj-tag">HTML</span>
+        <span class="proj-tag">JS</span>
+        <span class="proj-tag">Claude API</span>
+        <span class="proj-tag">Drive API</span>
+      </div>
+      <a href="https://github.com/Franzk12" class="proj-link" target="_blank" rel="noopener">ver en github →</a>
+    </div>
+
+    <div class="proj-item">
+      <span class="proj-num">04</span>
+      <p class="proj-name">Mi Agenda — Psicología</p>
+      <p class="proj-desc">Agenda clínica para profesionales. Pacientes, sesiones, cobros, estadísticas y recordatorios automáticos por WhatsApp.</p>
+      <div class="proj-tags">
+        <span class="proj-tag">HTML</span>
+        <span class="proj-tag">CSS</span>
+        <span class="proj-tag">JS</span>
+      </div>
+      <a href="https://github.com/Franzk12" class="proj-link" target="_blank" rel="noopener">ver en github →</a>
+    </div>
+
+    <div class="proj-item">
+      <span class="proj-num">05</span>
+      <p class="proj-name">DevTuc — Agencia de Software</p>
+      <p class="proj-desc">Landing + panel admin para agencia tucumana. Autenticación JWT, toggle ARS/USD y deploy full-stack.</p>
+      <div class="proj-tags">
+        <span class="proj-tag">React</span>
+        <span class="proj-tag">TypeScript</span>
+        <span class="proj-tag">Express</span>
+        <span class="proj-tag">MongoDB</span>
+      </div>
+      <a href="https://github.com/Franzk12" class="proj-link" target="_blank" rel="noopener">ver en github →</a>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<div class="px-divider"></div>
+
+<!-- SKILLS -->
+<section id="skills">
+<div class="wrap">
+  <span class="s-label">stack</span>
+  <h2 class="s-title reveal">Skills</h2>
+
+  <div class="skills-grid reveal">
+
+    <div class="sk-panel primary">
+      <span class="sk-panel-label">Lo que hago</span>
+      <div class="sk-bubbles">
+        <span class="skill-bubble sb-a">HTML</span>
+        <span class="skill-bubble sb-a">CSS</span>
+        <span class="skill-bubble sb-a">JavaScript</span>
+        <span class="skill-bubble sb-a">Python</span>
+        <span class="skill-bubble sb-a">React</span>
+        <span class="skill-bubble sb-a">TypeScript</span>
+        <span class="skill-bubble sb-a">Node.js</span>
+        <span class="skill-bubble sb-a">Express</span>
+        <span class="skill-bubble sb-a">MongoDB</span>
+        <span class="skill-bubble sb-a">Git</span>
+      </div>
+      <p class="sk-desc">Desarrollo sistemas a medida, sitios web y herramientas con IA para negocios y profesionales. Cada proyecto arranca desde el problema, no desde la tecnología.</p>
+    </div>
+
+    <div class="sk-panel secondary">
+      <span class="sk-panel-label">Siempre aprendiendo</span>
+      <div class="sk-bubbles">
+        <span class="skill-bubble sb-b">Claude API</span>
+        <span class="skill-bubble sb-b">REST APIs</span>
+        <span class="skill-bubble sb-b">Google Drive API</span>
+        <span class="skill-bubble sb-b">C</span>
+        <span class="skill-bubble sb-b">C++</span>
+      </div>
+      <p class="sk-desc">Ingeniería en Sistemas en UTN. Me interesan la arquitectura de software, los sistemas embebidos y el desarrollo de productos con IA integrada de forma útil, no decorativa.</p>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<div class="px-divider"></div>
+
+<!-- CONTACT -->
+<section id="contact">
+<div class="wrap">
+  <div class="contact-inner">
+    <span class="s-label">contacto</span>
+    <h2 class="s-title reveal">Hablemos</h2>
+    <p class="contact-sub reveal">¿Tenés un proyecto, una idea o querés saber más? Escribime — respondo rápido.</p>
+    <a href="mailto:franzk.dev@gmail.com" class="contact-mail reveal">franzk.dev@gmail.com</a>
+    <div class="contact-socials reveal">
+
+      <a href="https://github.com/Franzk12" target="_blank" rel="noopener" class="social-btn gh">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.167 6.839 9.49.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+        GitHub
+      </a>
+
+      <a href="https://www.linkedin.com/in/fran-zk-a13001390/" target="_blank" rel="noopener" class="social-btn li">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        LinkedIn
+      </a>
+
+      <a href="https://www.instagram.com/fran.zk_/" target="_blank" rel="noopener" class="social-btn ig">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        Instagram
+      </a>
+
+      <a href="https://kick.com/Fraanzk" target="_blank" rel="noopener" class="social-btn kick">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M2 2h4v6l4-6h4l-5 7 5 7h-4l-4-6v6H2V2zm14 0h4v20h-4V2z"/></svg>
+        Kick
+      </a>
+
+    </div>
+  </div>
+</div>
+</section>
+
+<footer>© 2024–2026 FRANZK · ALL RIGHTS RESERVED · TUCUMÁN, AR</footer>
+
+<script>
+/* ── CURSOR ── */
+const cur = document.getElementById('cursor');
+const trail = document.getElementById('cursor-trail');
+let mx=0,my=0,tx=0,ty=0;
+
+if(window.matchMedia('(pointer:fine)').matches){
+  document.addEventListener('mousemove',e=>{
+    mx=e.clientX;my=e.clientY;
+    cur.style.left=(mx-6)+'px';cur.style.top=(my-6)+'px';
+  });
+  function animTrail(){
+    tx+=(mx-tx)*.15;ty+=(my-ty)*.15;
+    trail.style.left=(tx-3)+'px';trail.style.top=(ty-3)+'px';
+    requestAnimationFrame(animTrail);
+  }
+  animTrail();
+  document.querySelectorAll('a,button,.skill-bubble').forEach(el=>{
+    el.addEventListener('mouseenter',()=>cur.classList.add('hover'));
+    el.addEventListener('mouseleave',()=>cur.classList.remove('hover'));
+  });
+}
+
+/* ── MOBILE MENU ── */
+function toggleMobile(){
+  document.getElementById('mobileMenu').classList.toggle('open');
+  document.getElementById('burger').classList.toggle('open');
+}
+function closeMobile(){
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.getElementById('burger').classList.remove('open');
+}
+
+/* ── TYPEWRITER ── */
+const phrases=['Desarrollador de Software','Streamer & Gamer','Freelance Builder','Estudiante de Ingeniería'];
+let pi=0,ci=0,deleting=false;
+const tagEl=document.getElementById('heroTag');
+function typewrite(){
+  const word=phrases[pi];
+  if(!deleting){
+    tagEl.textContent=word.slice(0,++ci);
+    if(ci===word.length){deleting=true;setTimeout(typewrite,1800);return;}
+    setTimeout(typewrite,65);
+  }else{
+    tagEl.textContent=word.slice(0,--ci);
+    if(ci===0){deleting=false;pi=(pi+1)%phrases.length;setTimeout(typewrite,300);return;}
+    setTimeout(typewrite,35);
+  }
+}
+typewrite();
+
+/* ── SCROLL REVEAL ── */
+const obs=new IntersectionObserver(
+  entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on')}),
+  {threshold:0.1}
+);
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script></body>
+</html>

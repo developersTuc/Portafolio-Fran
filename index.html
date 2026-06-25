@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>FRANZK — Dev · Streamer · Builder</title>
-<meta name="description" content="Franzk — Desarrollador de Software freelance en Tucumán. Sistemas a medida, sitios web, overlays para streamers y automatizaciones en Python."/>
-<meta property="og:title" content="FRANZK — Dev · Streamer · Builder"/>
-<meta property="og:description" content="Desarrollador freelance, streamer y estudiante de Ingeniería en Sistemas en UTN Tucumán."/>
+<title>FRANZK — Full-Stack Developer</title>
+<meta name="description" content="Franzk — Full-stack developer and Systems Engineering student at UTN Tucumán. React, Node, Next.js, Supabase. Building custom software. Open to remote work."/>
+<meta property="og:title" content="FRANZK — Full-Stack Developer"/>
+<meta property="og:description" content="Full-stack developer and Systems Engineering student. Custom software, PWAs and AI-integrated tools. Open to remote work."/>
 <meta property="og:type" content="website"/>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230a090f'/><text x='4' y='24' font-size='22'>⚔️</text></svg>"/>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet"/>
@@ -616,6 +616,11 @@ footer{
   .proj-item{flex-direction:column;gap:1rem}
   .skills-desc{flex-direction:column;gap:2rem}
 }
+
+/* language toggle */
+.nav-lang{font-family:'Press Start 2P',monospace;font-size:.5rem;color:var(--g1);background:transparent;border:1px solid rgba(26,255,156,.3);padding:.45rem .6rem;cursor:pointer;letter-spacing:.08em;transition:all .15s;image-rendering:pixelated}
+.nav-lang:hover{background:rgba(26,255,156,.08);box-shadow:0 0 10px rgba(26,255,156,.2);color:#fff}
+@media(max-width:640px){.nav-lang{margin-left:auto;margin-right:.7rem}}
 </style>
 </head>
 <body>
@@ -625,23 +630,24 @@ footer{
 
 <!-- Mobile drawer -->
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#home"       onclick="closeMobile()">Inicio</a>
+  <a href="#home"       onclick="closeMobile()" data-es="Inicio" data-en="Home">Inicio</a>
   <a href="#experience" onclick="closeMobile()">XP</a>
-  <a href="#projects"   onclick="closeMobile()">Proyectos</a>
+  <a href="#projects"   onclick="closeMobile()" data-es="Proyectos" data-en="Projects">Proyectos</a>
   <a href="#skills"     onclick="closeMobile()">Skills</a>
-  <a href="#contact"    onclick="closeMobile()">Contacto</a>
+  <a href="#contact"    onclick="closeMobile()" data-es="Contacto" data-en="Contact">Contacto</a>
 </div>
 
 <nav>
   <a href="#home" class="nav-logo">FRANZK</a>
   <ul class="nav-links">
-    <li><a href="#home">Inicio</a></li>
+    <li><a href="#home" data-es="Inicio" data-en="Home">Inicio</a></li>
     <li><a href="#experience">XP</a></li>
-    <li><a href="#projects">Proyectos</a></li>
+    <li><a href="#projects" data-es="Proyectos" data-en="Projects">Proyectos</a></li>
     <li><a href="#skills">Skills</a></li>
-    <li><a href="#contact">Contacto</a></li>
+    <li><a href="#contact" data-es="Contacto" data-en="Contact">Contacto</a></li>
   </ul>
-  <button class="nav-burger" id="burger" aria-label="Menú" onclick="toggleMobile()">
+  <button class="nav-lang" id="langBtn" onclick="toggleLang()" aria-label="Switch language">EN</button>
+  <button class="nav-burger" id="burger" aria-label="Menu" onclick="toggleMobile()">
     <span></span><span></span><span></span>
   </button>
 </nav>
@@ -651,22 +657,22 @@ footer{
   <span class="s-label reveal">franzk.dev — online</span>
   <span class="hero-tag" id="heroTag"></span>
   <h1 class="hero-name">FRANZK</h1>
-  <p class="hero-sub">Dev · Streamer · Builder</p>
-  <p class="hero-bio">
-    Técnico Superior en Desarrollo de Software y estudiante de Ingeniería en Sistemas en UTN Tucumán.
-    Construyo software a medida para negocios — y cuando no estoy programando, estoy en vivo:
-    streamer en Twitch/Kick, gamer desde siempre. Freelance, autodidacta, siempre buildando algo.
+  <p class="hero-sub" data-es="Desarrollador Full-Stack" data-en="Full-Stack Developer">Desarrollador Full-Stack</p>
+  <p class="hero-bio"
+     data-es="Estudiante de Ingeniería en Sistemas en UTN Tucumán y desarrollador freelance. Construyo software a medida para negocios: sistemas de gestión, PWAs y herramientas con IA integrada. Me interesan las arquitecturas full-stack y el trabajo remoto."
+     data-en="Systems Engineering student at UTN Tucumán and freelance developer. I build custom software for businesses: management systems, PWAs and tools with built-in AI. Into full-stack architectures and remote work.">
+    Estudiante de Ingeniería en Sistemas en UTN Tucumán y desarrollador freelance. Construyo software a medida para negocios: sistemas de gestión, PWAs y herramientas con IA integrada. Me interesan las arquitecturas full-stack y el trabajo remoto.
   </p>
   <div class="hero-badges">
-    <span class="badge badge-p">Programador</span>
+    <span class="badge badge-p" data-es="Programador" data-en="Developer">Programador</span>
     <span class="badge badge-g">Freelance</span>
-    <span class="badge badge-y">Estudiante UTN</span>
-    <span class="badge badge-pk">Streamer</span>
-    <span class="badge badge-g">League of Legends</span>
+    <span class="badge badge-y" data-es="Estudiante UTN" data-en="CS Student">Estudiante UTN</span>
+    <span class="badge badge-p">React</span>
+    <span class="badge badge-g" data-es="Remoto" data-en="Remote">Remoto</span>
   </div>
   <div class="hero-cta">
-    <a href="#projects" class="btn btn-primary">Ver proyectos</a>
-    <a href="#contact" class="btn btn-ghost">Contacto</a>
+    <a href="#projects" class="btn btn-primary" data-es="Ver proyectos" data-en="View projects">Ver proyectos</a>
+    <a href="#contact" class="btn btn-ghost" data-es="Contacto" data-en="Contact">Contacto</a>
   </div>
   <span class="pixel-char" aria-hidden="true">⚔️</span>
 </section>
@@ -676,8 +682,8 @@ footer{
 <!-- EXPERIENCE -->
 <section id="experience">
 <div class="wrap">
-  <span class="s-label">trayectoria</span>
-  <h2 class="s-title reveal">Experiencia &amp; Estudio</h2>
+  <span class="s-label" data-es="trayectoria" data-en="journey">trayectoria</span>
+  <h2 class="s-title reveal" data-es="Experiencia &amp; Estudio" data-en="Experience &amp; Education">Experiencia &amp; Estudio</h2>
 </div>
 
 <div class="timeline-wrap reveal">
@@ -687,8 +693,8 @@ footer{
       <div class="tl-card">
         <span class="tl-year">2018 — 2024</span>
         <span class="tl-type">EDU</span>
-        <p class="tl-title">Técnico Superior en Informática</p>
-        <p class="tl-sub">Escuela Técnica</p>
+        <p class="tl-title" data-es="Técnico Superior en Informática" data-en="Higher Technical Degree in IT">Técnico Superior en Informática</p>
+        <p class="tl-sub" data-es="Escuela Técnica" data-en="Technical School">Escuela Técnica</p>
       </div>
       <div class="tl-connector"></div>
       <div class="tl-dot"></div>
@@ -700,8 +706,8 @@ footer{
       <div class="tl-card">
         <span class="tl-year">2020 — 2024</span>
         <span class="tl-type">EDU</span>
-        <p class="tl-title">Tecnicatura Superior en Desarrollo de Software</p>
-        <p class="tl-sub">Completada</p>
+        <p class="tl-title" data-es="Tecnicatura Superior en Desarrollo de Software" data-en="Higher Degree in Software Development">Tecnicatura Superior en Desarrollo de Software</p>
+        <p class="tl-sub" data-es="Completada" data-en="Completed">Completada</p>
       </div>
     </div>
 
@@ -709,8 +715,8 @@ footer{
       <div class="tl-card">
         <span class="tl-year">2020 — 2026</span>
         <span class="tl-type">DEV</span>
-        <p class="tl-title">Tutor de Programación</p>
-        <p class="tl-sub">C, C++, estructuras · UTN / Particular</p>
+        <p class="tl-title" data-es="Tutor de Programación" data-en="Programming Tutor">Tutor de Programación</p>
+        <p class="tl-sub" data-es="C, C++, estructuras · UTN / Particular" data-en="C, C++, data structures · UTN / Private">C, C++, estructuras · UTN / Particular</p>
       </div>
       <div class="tl-connector"></div>
       <div class="tl-dot"></div>
@@ -720,18 +726,18 @@ footer{
       <div class="tl-dot"></div>
       <div class="tl-connector"></div>
       <div class="tl-card">
-        <span class="tl-year">2022 — Presente</span>
+        <span class="tl-year" data-es="2022 — Presente" data-en="2022 — Present">2022 — Presente</span>
         <span class="tl-type">DEV</span>
-        <p class="tl-title">Desarrollador Freelance</p>
-        <p class="tl-sub">POS, sitios web, overlays, Python</p>
+        <p class="tl-title" data-es="Desarrollador Freelance" data-en="Freelance Developer">Desarrollador Freelance</p>
+        <p class="tl-sub" data-es="POS, sitios web, PWAs, Python" data-en="POS, websites, PWAs, Python">POS, sitios web, PWAs, Python</p>
       </div>
     </div>
 
     <div class="tl-item edu top">
       <div class="tl-card">
-        <span class="tl-year">2025 — En curso</span>
+        <span class="tl-year" data-es="2025 — En curso" data-en="2025 — Ongoing">2025 — En curso</span>
         <span class="tl-type">EDU</span>
-        <p class="tl-title">Ingeniería en Sistemas de Información</p>
+        <p class="tl-title" data-es="Ingeniería en Sistemas de Información" data-en="Information Systems Engineering">Ingeniería en Sistemas de Información</p>
         <p class="tl-sub">UTN Tucumán</p>
       </div>
       <div class="tl-connector"></div>
@@ -739,7 +745,7 @@ footer{
     </div>
 
   </div>
-  <p class="timeline-hint">← deslizá para ver más →</p>
+  <p class="timeline-hint" data-es="← deslizá para ver más →" data-en="← swipe to see more →">← deslizá para ver más →</p>
 </div>
 
 </section>
@@ -750,95 +756,122 @@ footer{
 <section id="projects">
 <div class="wrap">
   <span class="s-label">builds</span>
-  <h2 class="s-title reveal">Proyectos</h2>
+  <h2 class="s-title reveal" data-es="Proyectos" data-en="Projects">Proyectos</h2>
 
-  <!-- Proyecto estrella -->
+  <!-- Featured -->
   <div class="proj-featured reveal">
     <div class="proj-feat-body">
       <div>
         <span class="proj-feat-num">01</span>
-        <span class="proj-feat-label">★ PROYECTO DESTACADO</span>
-        <p class="proj-feat-name">Ruta 38 Repuestos — POS</p>
-        <p class="proj-feat-desc">Sistema de punto de venta para un comercio de repuestos automotrices. Gestión de ventas, caja, inventario por categorías, generación de tickets y presupuestos imprimibles.</p>
+        <span class="proj-feat-label" data-es="★ PROYECTO DESTACADO" data-en="★ FEATURED PROJECT">★ PROYECTO DESTACADO</span>
+        <p class="proj-feat-name">UTN Tracker</p>
+        <p class="proj-feat-desc"
+           data-es="PWA offline-first para seguir el avance de la carrera: materias, correlativas, notas, modo Pomodoro y un asistente de IA multi-modelo. Funciona sin conexión y sincroniza al volver online."
+           data-en="Offline-first PWA to track degree progress: subjects, prerequisites, grades, a Pomodoro mode and a multi-model AI assistant. Works offline and syncs when back online.">PWA offline-first para seguir el avance de la carrera: materias, correlativas, notas, modo Pomodoro y un asistente de IA multi-modelo. Funciona sin conexión y sincroniza al volver online.</p>
         <div class="proj-feat-tags">
-          <span class="proj-tag">Python</span>
-          <span class="proj-tag">Pillow</span>
-          <span class="proj-tag">POS</span>
+          <span class="proj-tag">React</span>
+          <span class="proj-tag">Vercel Serverless</span>
+          <span class="proj-tag">Supabase</span>
+          <span class="proj-tag">Cloudflare R2</span>
         </div>
       </div>
-      <a href="https://github.com/Franzk12" class="proj-feat-link" target="_blank" rel="noopener">ver en github →</a>
+      <div style="display:flex;flex-direction:column;gap:.35rem;align-items:flex-start">
+        <a href="https://utn-tracker2.vercel.app" class="proj-feat-link" target="_blank" rel="noopener" data-es="ver demo →" data-en="live demo →">ver demo →</a>
+        <a href="https://github.com/Franzk12/UTN-Tracker" class="proj-feat-link" target="_blank" rel="noopener" data-es="código →" data-en="code →">código →</a>
+      </div>
     </div>
     <div class="proj-feat-side">
       <div class="proj-feat-stat">
-        <span class="proj-feat-stat-label">TIPO</span>
-        <span class="proj-feat-stat-val">Software de gestión</span>
+        <span class="proj-feat-stat-label" data-es="TIPO" data-en="TYPE">TIPO</span>
+        <span class="proj-feat-stat-val" data-es="PWA full-stack" data-en="Full-stack PWA">PWA full-stack</span>
       </div>
       <div class="proj-feat-stat">
-        <span class="proj-feat-stat-label">CLIENTE</span>
-        <span class="proj-feat-stat-val">Comercio automotriz</span>
+        <span class="proj-feat-stat-label" data-es="ROL" data-en="ROLE">ROL</span>
+        <span class="proj-feat-stat-val" data-es="Dev solo" data-en="Solo dev">Dev solo</span>
       </div>
       <div class="proj-feat-stat">
-        <span class="proj-feat-stat-label">ESTADO</span>
-        <span class="proj-feat-stat-val" style="color:var(--g1)">En producción ●</span>
+        <span class="proj-feat-stat-label" data-es="ESTADO" data-en="STATUS">ESTADO</span>
+        <span class="proj-feat-stat-val" style="color:var(--g1)" data-es="En línea ●" data-en="Live ●">En línea ●</span>
       </div>
       <div class="proj-feat-stat">
         <span class="proj-feat-stat-label">STACK</span>
-        <span class="proj-feat-stat-val">Python · Pillow</span>
+        <span class="proj-feat-stat-val">React · Supabase · R2</span>
       </div>
     </div>
   </div>
 
-  <!-- Grid secundario -->
+  <!-- Grid -->
   <div class="proj-grid reveal">
 
     <div class="proj-item">
       <span class="proj-num">02</span>
-      <p class="proj-name">Franzk — Portfolio &amp; Servicios (v2)</p>
-      <p class="proj-desc">Portafolio personal con animaciones CSS, tipografía monoespaciada y meta tags para SEO y redes sociales.</p>
+      <p class="proj-name">Tienda</p>
+      <p class="proj-desc"
+         data-es="Tienda mayorista/minorista con catálogo público y panel admin completo: productos, categorías, ofertas y sucursales, con autenticación."
+         data-en="Retail &amp; wholesale store with a public catalog and a full admin dashboard: products, categories, offers and branches, with authentication.">Tienda mayorista/minorista con catálogo público y panel admin completo: productos, categorías, ofertas y sucursales, con autenticación.</p>
       <div class="proj-tags">
-        <span class="proj-tag">HTML</span>
-        <span class="proj-tag">CSS</span>
-        <span class="proj-tag">JS</span>
+        <span class="proj-tag">Next.js</span>
+        <span class="proj-tag">better-auth</span>
+        <span class="proj-tag">Drizzle</span>
+        <span class="proj-tag">PostgreSQL</span>
       </div>
-      <a href="https://github.com/Franzk12" class="proj-link" target="_blank" rel="noopener">ver en github →</a>
+      <a href="https://github.com/Franzk12/Tienda" class="proj-link" target="_blank" rel="noopener" data-es="ver en github →" data-en="view on github →">ver en github →</a>
     </div>
 
     <div class="proj-item">
       <span class="proj-num">03</span>
-      <p class="proj-name">FacuTrack — Gestión de materias</p>
-      <p class="proj-desc">App para organizar la carrera universitaria. Materias, calendario, notas, grilla horaria y asistente IA integrado con Google Drive.</p>
+      <p class="proj-name">Forrajería</p>
+      <p class="proj-desc"
+         data-es="Sistema de ventas/POS para forrajería: venta por unidad o suelto, historial de ventas y dashboard."
+         data-en="Sales/POS system for a feed store: sell by unit or loose weight, sales history and dashboard.">Sistema de ventas/POS para forrajería: venta por unidad o suelto, historial de ventas y dashboard.</p>
       <div class="proj-tags">
-        <span class="proj-tag">HTML</span>
-        <span class="proj-tag">JS</span>
-        <span class="proj-tag">Claude API</span>
-        <span class="proj-tag">Drive API</span>
+        <span class="proj-tag">Next.js</span>
+        <span class="proj-tag">Supabase</span>
+        <span class="proj-tag">shadcn/ui</span>
       </div>
-      <a href="https://github.com/Franzk12" class="proj-link" target="_blank" rel="noopener">ver en github →</a>
+      <a href="https://github.com/Franzk12/Forrajeria" class="proj-link" target="_blank" rel="noopener" data-es="ver en github →" data-en="view on github →">ver en github →</a>
     </div>
 
     <div class="proj-item">
       <span class="proj-num">04</span>
-      <p class="proj-name">Mi Agenda — Psicología</p>
-      <p class="proj-desc">Agenda clínica para profesionales. Pacientes, sesiones, cobros, estadísticas y recordatorios automáticos por WhatsApp.</p>
+      <p class="proj-name" data-es="Ruta 38 Repuestos — POS" data-en="Ruta 38 Auto Parts — POS">Ruta 38 Repuestos — POS</p>
+      <p class="proj-desc"
+         data-es="Punto de venta en el navegador para un comercio de repuestos: ventas, presupuestos, tickets imprimibles e inventario. Funciona 100% offline."
+         data-en="Browser-based POS for an auto-parts shop: sales, quotes, printable tickets and inventory. Works 100% offline.">Punto de venta en el navegador para un comercio de repuestos: ventas, presupuestos, tickets imprimibles e inventario. Funciona 100% offline.</p>
       <div class="proj-tags">
-        <span class="proj-tag">HTML</span>
-        <span class="proj-tag">CSS</span>
-        <span class="proj-tag">JS</span>
+        <span class="proj-tag">JavaScript</span>
+        <span class="proj-tag">LocalStorage</span>
       </div>
-      <a href="https://github.com/Franzk12" class="proj-link" target="_blank" rel="noopener">ver en github →</a>
+      <a href="https://ruta-38.vercel.app" class="proj-link" target="_blank" rel="noopener" data-es="ver demo →" data-en="live demo →">ver demo →</a>
+      <a href="https://github.com/Franzk12/Ruta-38" class="proj-link" target="_blank" rel="noopener" data-es="código →" data-en="code →">código →</a>
     </div>
 
     <div class="proj-item">
       <span class="proj-num">05</span>
-      <p class="proj-name">DevTuc — Agencia de Software</p>
-      <p class="proj-desc">Landing + panel admin para agencia tucumana. Autenticación JWT, toggle ARS/USD y deploy full-stack.</p>
+      <p class="proj-name" data-es="Agenda Psicología" data-en="Psychology Agenda">Agenda Psicología</p>
+      <p class="proj-desc"
+         data-es="App de turnos para un consultorio psicológico: pacientes, sesiones y vista de calendario, sobre Supabase."
+         data-en="Appointment app for a psychology practice: patients, sessions and a calendar view, built on Supabase.">App de turnos para un consultorio psicológico: pacientes, sesiones y vista de calendario, sobre Supabase.</p>
       <div class="proj-tags">
         <span class="proj-tag">React</span>
-        <span class="proj-tag">TypeScript</span>
-        <span class="proj-tag">Express</span>
-        <span class="proj-tag">MongoDB</span>
+        <span class="proj-tag">Vite</span>
+        <span class="proj-tag">Supabase</span>
       </div>
-      <a href="https://github.com/Franzk12" class="proj-link" target="_blank" rel="noopener">ver en github →</a>
+      <a href="https://github.com/Franzk12/agenda-psicologia" class="proj-link" target="_blank" rel="noopener" data-es="ver en github →" data-en="view on github →">ver en github →</a>
+    </div>
+
+    <div class="proj-item">
+      <span class="proj-num">06</span>
+      <p class="proj-name" data-es="Don Florencio — Catálogo" data-en="Don Florencio — Catalog">Don Florencio — Catálogo</p>
+      <p class="proj-desc"
+         data-es="Catálogo web instalable (PWA) para un almacén, con panel de administración. JS vanilla, funciona offline."
+         data-en="Installable web catalog (PWA) for a grocery store, with an admin panel. Vanilla JS, works offline.">Catálogo web instalable (PWA) para un almacén, con panel de administración. JS vanilla, funciona offline.</p>
+      <div class="proj-tags">
+        <span class="proj-tag">PWA</span>
+        <span class="proj-tag">JavaScript</span>
+        <span class="proj-tag">Service Worker</span>
+      </div>
+      <a href="https://github.com/Franzk12/Don-Florencio" class="proj-link" target="_blank" rel="noopener" data-es="ver en github →" data-en="view on github →">ver en github →</a>
     </div>
 
   </div>
@@ -856,32 +889,36 @@ footer{
   <div class="skills-grid reveal">
 
     <div class="sk-panel primary">
-      <span class="sk-panel-label">Lo que hago</span>
+      <span class="sk-panel-label" data-es="Lo que hago" data-en="What I do">Lo que hago</span>
       <div class="sk-bubbles">
-        <span class="skill-bubble sb-a">HTML</span>
-        <span class="skill-bubble sb-a">CSS</span>
         <span class="skill-bubble sb-a">JavaScript</span>
-        <span class="skill-bubble sb-a">Python</span>
-        <span class="skill-bubble sb-a">React</span>
         <span class="skill-bubble sb-a">TypeScript</span>
+        <span class="skill-bubble sb-a">React</span>
+        <span class="skill-bubble sb-a">Next.js</span>
         <span class="skill-bubble sb-a">Node.js</span>
-        <span class="skill-bubble sb-a">Express</span>
-        <span class="skill-bubble sb-a">MongoDB</span>
+        <span class="skill-bubble sb-a">Python</span>
+        <span class="skill-bubble sb-a">Supabase</span>
+        <span class="skill-bubble sb-a">PostgreSQL</span>
         <span class="skill-bubble sb-a">Git</span>
+        <span class="skill-bubble sb-a">Docker</span>
       </div>
-      <p class="sk-desc">Desarrollo sistemas a medida, sitios web y herramientas con IA para negocios y profesionales. Cada proyecto arranca desde el problema, no desde la tecnología.</p>
+      <p class="sk-desc"
+         data-es="Desarrollo sistemas a medida, PWAs y herramientas con IA para negocios y profesionales. Cada proyecto arranca desde el problema, no desde la tecnología."
+         data-en="I build custom systems, PWAs and AI-powered tools for businesses and professionals. Every project starts from the problem, not the technology.">Desarrollo sistemas a medida, PWAs y herramientas con IA para negocios y profesionales. Cada proyecto arranca desde el problema, no desde la tecnología.</p>
     </div>
 
     <div class="sk-panel secondary">
-      <span class="sk-panel-label">Siempre aprendiendo</span>
+      <span class="sk-panel-label" data-es="Siempre aprendiendo" data-en="Always learning">Siempre aprendiendo</span>
       <div class="sk-bubbles">
-        <span class="skill-bubble sb-b">Claude API</span>
+        <span class="skill-bubble sb-b">Vercel</span>
+        <span class="skill-bubble sb-b">Cloudflare R2</span>
         <span class="skill-bubble sb-b">REST APIs</span>
-        <span class="skill-bubble sb-b">Google Drive API</span>
-        <span class="skill-bubble sb-b">C</span>
-        <span class="skill-bubble sb-b">C++</span>
+        <span class="skill-bubble sb-b">LLM APIs</span>
+        <span class="skill-bubble sb-b">C / C++</span>
       </div>
-      <p class="sk-desc">Ingeniería en Sistemas en UTN. Me interesan la arquitectura de software, los sistemas embebidos y el desarrollo de productos con IA integrada de forma útil, no decorativa.</p>
+      <p class="sk-desc"
+         data-es="Estudiante de Ingeniería en Sistemas en UTN. Me interesan las arquitecturas full-stack, los sistemas embebidos y los productos con IA integrada de forma útil, no decorativa."
+         data-en="Systems Engineering student at UTN. Into full-stack architectures, embedded systems and products with AI integrated in a useful way, not as decoration.">Estudiante de Ingeniería en Sistemas en UTN. Me interesan las arquitecturas full-stack, los sistemas embebidos y los productos con IA integrada de forma útil, no decorativa.</p>
     </div>
 
   </div>
@@ -894,9 +931,11 @@ footer{
 <section id="contact">
 <div class="wrap">
   <div class="contact-inner">
-    <span class="s-label">contacto</span>
-    <h2 class="s-title reveal">Hablemos</h2>
-    <p class="contact-sub reveal">¿Tenés un proyecto, una idea o querés saber más? Escribime — respondo rápido.</p>
+    <span class="s-label" data-es="contacto" data-en="contact">contacto</span>
+    <h2 class="s-title reveal" data-es="Hablemos" data-en="Let's talk">Hablemos</h2>
+    <p class="contact-sub reveal"
+       data-es="¿Tenés un proyecto, una idea o buscás un dev para tu equipo? Escribime — respondo rápido."
+       data-en="Got a project, an idea, or looking for a dev for your team? Drop me a line — I reply fast.">¿Tenés un proyecto, una idea o buscás un dev para tu equipo? Escribime — respondo rápido.</p>
     <a href="mailto:franzk.dev@gmail.com" class="contact-mail reveal">franzk.dev@gmail.com</a>
     <div class="contact-socials reveal">
 
@@ -910,11 +949,6 @@ footer{
         LinkedIn
       </a>
 
-      <a href="https://www.instagram.com/fran.zk_/" target="_blank" rel="noopener" class="social-btn ig">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-        Instagram
-      </a>
-
       <a href="https://kick.com/Fraanzk" target="_blank" rel="noopener" class="social-btn kick">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M2 2h4v6l4-6h4l-5 7 5 7h-4l-4-6v6H2V2zm14 0h4v20h-4V2z"/></svg>
         Kick
@@ -925,14 +959,13 @@ footer{
 </div>
 </section>
 
-<footer>© 2024–2026 FRANZK · ALL RIGHTS RESERVED · TUCUMÁN, AR</footer>
+<footer>© 2024–2026 FRANZK · TUCUMÁN, AR</footer>
 
 <script>
-/* ── CURSOR ── */
+/* CURSOR */
 const cur = document.getElementById('cursor');
 const trail = document.getElementById('cursor-trail');
 let mx=0,my=0,tx=0,ty=0;
-
 if(window.matchMedia('(pointer:fine)').matches){
   document.addEventListener('mousemove',e=>{
     mx=e.clientX;my=e.clientY;
@@ -950,7 +983,7 @@ if(window.matchMedia('(pointer:fine)').matches){
   });
 }
 
-/* ── MOBILE MENU ── */
+/* MOBILE MENU */
 function toggleMobile(){
   document.getElementById('mobileMenu').classList.toggle('open');
   document.getElementById('burger').classList.toggle('open');
@@ -960,8 +993,29 @@ function closeMobile(){
   document.getElementById('burger').classList.remove('open');
 }
 
-/* ── TYPEWRITER ── */
-const phrases=['Desarrollador de Software','Streamer & Gamer','Freelance Builder','Estudiante de Ingeniería'];
+/* LANGUAGE TOGGLE */
+const PHRASES = {
+  es:['Desarrollador Full-Stack','Freelance Builder','Estudiante de Ingeniería','Disponible para remoto'],
+  en:['Full-Stack Developer','Freelance Builder','Engineering Student','Open to remote work']
+};
+let lang='es';
+try{const saved=localStorage.getItem('lang'); if(saved==='en'||saved==='es')lang=saved;}catch(e){}
+let phrases = PHRASES[lang];
+function applyLang(l){
+  lang=l;
+  document.documentElement.lang=l;
+  document.querySelectorAll('[data-es]').forEach(el=>{
+    const v=el.getAttribute('data-'+l);
+    if(v!=null) el.textContent=v;
+  });
+  const btn=document.getElementById('langBtn');
+  if(btn) btn.textContent = (l==='es') ? 'EN' : 'ES';
+  phrases = PHRASES[l]; pi=0; ci=0; deleting=false;
+  try{localStorage.setItem('lang',l);}catch(e){}
+}
+function toggleLang(){ applyLang(lang==='es'?'en':'es'); }
+
+/* TYPEWRITER */
 let pi=0,ci=0,deleting=false;
 const tagEl=document.getElementById('heroTag');
 function typewrite(){
@@ -972,17 +1026,21 @@ function typewrite(){
     setTimeout(typewrite,65);
   }else{
     tagEl.textContent=word.slice(0,--ci);
-    if(ci===0){deleting=false;pi=(pi+1)%phrases.length;setTimeout(typewrite,300);return;}
+    if(ci<=0){ci=0;deleting=false;pi=(pi+1)%phrases.length;setTimeout(typewrite,300);return;}
     setTimeout(typewrite,35);
   }
 }
-typewrite();
 
-/* ── SCROLL REVEAL ── */
+/* SCROLL REVEAL */
 const obs=new IntersectionObserver(
   entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on')}),
   {threshold:0.1}
 );
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
-</script></body>
+
+/* INIT */
+applyLang(lang);
+typewrite();
+</script>
+</body>
 </html>

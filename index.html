@@ -112,7 +112,7 @@ nav{
 
 /* ── HERO ── */
 #home{
-  min-height:100vh;display:flex;flex-direction:column;
+  min-height:100svh;display:flex;flex-direction:column;
   justify-content:center;padding:7rem 2.5rem 4rem;
   position:relative;overflow:hidden
 }
@@ -366,15 +366,15 @@ nav{
 /* ── Proyecto destacado ── */
 .proj-featured{
   margin-top:3rem;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:0;
+  display:flex;
+  flex-direction:column;
   border:1px solid rgba(124,106,247,.2);
   background:var(--bg2);
   position:relative;
   overflow:hidden;
   transition:border-color .3s;
 }
+.proj-featured+.proj-featured{margin-top:1.2rem}
 .proj-featured:hover{border-color:rgba(124,106,247,.45)}
 
 /* borde superior degradado */
@@ -382,6 +382,28 @@ nav{
   content:'';position:absolute;
   top:0;left:0;right:0;height:2px;
   background:linear-gradient(90deg,var(--p1),var(--g1));
+  z-index:1;
+}
+
+/* banner de imagen */
+.proj-feat-banner{
+  width:100%;aspect-ratio:16/6;overflow:hidden;
+  background:
+    repeating-linear-gradient(-45deg,rgba(124,106,247,.13) 0,rgba(124,106,247,.13) 1px,transparent 1px,transparent 8px),
+    var(--bg3);
+  border-bottom:1px solid rgba(124,106,247,.1);
+  position:relative;
+}
+.proj-feat-banner img{
+  width:100%;height:100%;object-fit:cover;object-position:top center;
+  display:block;transition:transform .5s ease;
+}
+.proj-featured:hover .proj-feat-banner img{transform:scale(1.03)}
+
+/* columnas cuerpo + stats */
+.proj-feat-cols{
+  display:grid;
+  grid-template-columns:1fr 1fr;
 }
 
 .proj-feat-body{
@@ -441,6 +463,21 @@ nav{
   font-size:.92rem;font-weight:600;color:var(--text);
 }
 
+/* thumbnail del grid */
+.proj-thumb{
+  aspect-ratio:16/10;overflow:hidden;
+  background:
+    repeating-linear-gradient(-45deg,rgba(124,106,247,.12) 0,rgba(124,106,247,.12) 1px,transparent 1px,transparent 8px),
+    var(--bg3);
+  border-bottom:1px solid rgba(124,106,247,.08);
+  margin:-1.3rem -1.4rem .9rem;
+}
+.proj-thumb img{
+  width:100%;height:100%;object-fit:cover;object-position:top center;
+  display:block;transition:transform .5s ease;
+}
+.proj-item:hover .proj-thumb img{transform:scale(1.04)}
+
 /* ── Grid de proyectos secundarios ── */
 .proj-grid{
   margin-top:1.2rem;
@@ -488,7 +525,7 @@ nav{
 .proj-link:hover{letter-spacing:.1em}
 
 @media(max-width:640px){
-  .proj-featured{grid-template-columns:1fr}
+  .proj-feat-cols{grid-template-columns:1fr}
   .proj-feat-body{border-right:none;border-bottom:1px solid rgba(124,106,247,.1)}
   .proj-grid{grid-template-columns:1fr}
 }
@@ -615,6 +652,15 @@ footer{
   .pixel-char{display:none}
   .proj-item{flex-direction:column;gap:1rem}
   .skills-desc{flex-direction:column;gap:2rem}
+}
+
+/* prefers-reduced-motion */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+  }
 }
 
 /* language toggle */
@@ -758,85 +804,94 @@ footer{
   <span class="s-label">builds</span>
   <h2 class="s-title reveal" data-es="Proyectos" data-en="Projects">Proyectos</h2>
 
-  <!-- Featured -->
+  <!-- Featured 1: UTN Tracker -->
   <div class="proj-featured reveal">
-    <div class="proj-feat-body">
-      <div>
-        <span class="proj-feat-num">01</span>
-        <span class="proj-feat-label" data-es="★ PROYECTO DESTACADO" data-en="★ FEATURED PROJECT">★ PROYECTO DESTACADO</span>
-        <p class="proj-feat-name">UTN Tracker</p>
-        <p class="proj-feat-desc"
-           data-es="PWA offline-first para seguir el avance de la carrera: materias, correlativas, notas, modo Pomodoro y un asistente de IA multi-modelo. Funciona sin conexión y sincroniza al volver online."
-           data-en="Offline-first PWA to track degree progress: subjects, prerequisites, grades, a Pomodoro mode and a multi-model AI assistant. Works offline and syncs when back online.">PWA offline-first para seguir el avance de la carrera: materias, correlativas, notas, modo Pomodoro y un asistente de IA multi-modelo. Funciona sin conexión y sincroniza al volver online.</p>
-        <div class="proj-feat-tags">
-          <span class="proj-tag">React</span>
-          <span class="proj-tag">Vercel Serverless</span>
-          <span class="proj-tag">Supabase</span>
-          <span class="proj-tag">Cloudflare R2</span>
+    <div class="proj-feat-banner">
+      <img src="assets/projects/utn-tracker.webp" alt="UTN Tracker screenshot" loading="lazy" onerror="this.style.display='none'">
+    </div>
+    <div class="proj-feat-cols">
+      <div class="proj-feat-body">
+        <div>
+          <span class="proj-feat-num">01</span>
+          <span class="proj-feat-label" data-es="★ PROYECTO DESTACADO" data-en="★ FEATURED PROJECT">★ PROYECTO DESTACADO</span>
+          <p class="proj-feat-name">UTN Tracker</p>
+          <p class="proj-feat-desc"
+             data-es="PWA offline-first para seguir el avance de la carrera: materias, correlativas, notas, modo Pomodoro y un asistente de IA multi-modelo. Funciona sin conexión y sincroniza al volver online."
+             data-en="Offline-first PWA to track degree progress: subjects, prerequisites, grades, a Pomodoro mode and a multi-model AI assistant. Works offline and syncs when back online.">PWA offline-first para seguir el avance de la carrera: materias, correlativas, notas, modo Pomodoro y un asistente de IA multi-modelo. Funciona sin conexión y sincroniza al volver online.</p>
+          <div class="proj-feat-tags">
+            <span class="proj-tag">React</span>
+            <span class="proj-tag">Vercel Serverless</span>
+            <span class="proj-tag">Supabase</span>
+            <span class="proj-tag">Cloudflare R2</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.35rem;align-items:flex-start">
+          <a href="https://utn-tracker2.vercel.app" class="proj-feat-link" target="_blank" rel="noopener" data-es="ver demo →" data-en="live demo →">ver demo →</a>
+          <a href="https://github.com/Franzk12/UTN-Tracker" class="proj-feat-link" target="_blank" rel="noopener" data-es="código →" data-en="code →">código →</a>
         </div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:.35rem;align-items:flex-start">
-        <a href="https://utn-tracker2.vercel.app" class="proj-feat-link" target="_blank" rel="noopener" data-es="ver demo →" data-en="live demo →">ver demo →</a>
-        <a href="https://github.com/Franzk12/UTN-Tracker" class="proj-feat-link" target="_blank" rel="noopener" data-es="código →" data-en="code →">código →</a>
-      </div>
-    </div>
-    <div class="proj-feat-side">
-      <div class="proj-feat-stat">
-        <span class="proj-feat-stat-label" data-es="TIPO" data-en="TYPE">TIPO</span>
-        <span class="proj-feat-stat-val" data-es="PWA full-stack" data-en="Full-stack PWA">PWA full-stack</span>
-      </div>
-      <div class="proj-feat-stat">
-        <span class="proj-feat-stat-label" data-es="ROL" data-en="ROLE">ROL</span>
-        <span class="proj-feat-stat-val" data-es="Dev solo" data-en="Solo dev">Dev solo</span>
-      </div>
-      <div class="proj-feat-stat">
-        <span class="proj-feat-stat-label" data-es="ESTADO" data-en="STATUS">ESTADO</span>
-        <span class="proj-feat-stat-val" style="color:var(--g1)" data-es="En línea ●" data-en="Live ●">En línea ●</span>
-      </div>
-      <div class="proj-feat-stat">
-        <span class="proj-feat-stat-label">STACK</span>
-        <span class="proj-feat-stat-val">React · Supabase · R2</span>
+      <div class="proj-feat-side">
+        <div class="proj-feat-stat">
+          <span class="proj-feat-stat-label" data-es="TIPO" data-en="TYPE">TIPO</span>
+          <span class="proj-feat-stat-val" data-es="PWA full-stack" data-en="Full-stack PWA">PWA full-stack</span>
+        </div>
+        <div class="proj-feat-stat">
+          <span class="proj-feat-stat-label" data-es="ROL" data-en="ROLE">ROL</span>
+          <span class="proj-feat-stat-val" data-es="Dev solo" data-en="Solo dev">Dev solo</span>
+        </div>
+        <div class="proj-feat-stat">
+          <span class="proj-feat-stat-label" data-es="ESTADO" data-en="STATUS">ESTADO</span>
+          <span class="proj-feat-stat-val" style="color:var(--g1)" data-es="En línea ●" data-en="Live ●">En línea ●</span>
+        </div>
+        <div class="proj-feat-stat">
+          <span class="proj-feat-stat-label">STACK</span>
+          <span class="proj-feat-stat-val">React · Supabase · R2</span>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Featured 2: Smash Burger -->
   <div class="proj-featured reveal">
-    <div class="proj-feat-body">
-      <div>
-        <span class="proj-feat-num">02</span>
-        <span class="proj-feat-label" data-es="★ PROYECTO DESTACADO" data-en="★ FEATURED PROJECT">★ PROYECTO DESTACADO</span>
-        <p class="proj-feat-name">Smash Burger Alberdi</p>
-        <p class="proj-feat-desc"
-           data-es="Tienda online de pedidos para una hamburguesería: menú, carrito y checkout con pagos reales por Mercado Pago (con webhooks), seguimiento del pedido y panel de administración. Un bot en Node (PM2) avisa los pedidos nuevos."
-           data-en="Online ordering store for a burger joint: menu, cart and checkout with real Mercado Pago payments (with webhooks), order tracking and an admin panel. A Node bot (PM2) pushes new-order notifications.">Tienda online de pedidos para una hamburguesería: menú, carrito y checkout con pagos reales por Mercado Pago (con webhooks), seguimiento del pedido y panel de administración. Un bot en Node (PM2) avisa los pedidos nuevos.</p>
-        <div class="proj-feat-tags">
-          <span class="proj-tag">Next.js</span>
-          <span class="proj-tag">Supabase</span>
-          <span class="proj-tag">Mercado Pago</span>
-          <span class="proj-tag">Webhooks</span>
+    <div class="proj-feat-banner">
+      <img src="assets/projects/smash-burger.webp" alt="Smash Burger screenshot" loading="lazy" onerror="this.style.display='none'">
+    </div>
+    <div class="proj-feat-cols">
+      <div class="proj-feat-body">
+        <div>
+          <span class="proj-feat-num">02</span>
+          <span class="proj-feat-label" data-es="★ PROYECTO DESTACADO" data-en="★ FEATURED PROJECT">★ PROYECTO DESTACADO</span>
+          <p class="proj-feat-name">Smash Burger</p>
+          <p class="proj-feat-desc"
+             data-es="Landing y menú digital para una hamburguesería local. Carta interactiva, sección de promociones y datos de contacto. Diseño orientado a conversión, sin frameworks."
+             data-en="Landing page and digital menu for a local burger joint. Interactive menu, deals section and contact info. Conversion-focused design, no frameworks.">Landing y menú digital para una hamburguesería local. Carta interactiva, sección de promociones y datos de contacto. Diseño orientado a conversión, sin frameworks.</p>
+          <div class="proj-feat-tags">
+            <span class="proj-tag">HTML</span>
+            <span class="proj-tag">CSS</span>
+            <span class="proj-tag">JavaScript</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.35rem;align-items:flex-start">
+          <a href="https://github.com/Franzk12" class="proj-feat-link" target="_blank" rel="noopener" data-es="ver en github →" data-en="view on github →">ver en github →</a>
         </div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:.35rem;align-items:flex-start">
-        <a href="https://github.com/Franzk12/smash-burger-alberdi" class="proj-feat-link" target="_blank" rel="noopener" data-es="código →" data-en="code →">código →</a>
-      </div>
-    </div>
-    <div class="proj-feat-side">
-      <div class="proj-feat-stat">
-        <span class="proj-feat-stat-label" data-es="TIPO" data-en="TYPE">TIPO</span>
-        <span class="proj-feat-stat-val">E-commerce</span>
-      </div>
-      <div class="proj-feat-stat">
-        <span class="proj-feat-stat-label" data-es="ROL" data-en="ROLE">ROL</span>
-        <span class="proj-feat-stat-val" data-es="Dev solo" data-en="Solo dev">Dev solo</span>
-      </div>
-      <div class="proj-feat-stat">
-        <span class="proj-feat-stat-label" data-es="PAGOS" data-en="PAYMENTS">PAGOS</span>
-        <span class="proj-feat-stat-val" style="color:var(--g1)">Mercado Pago</span>
-      </div>
-      <div class="proj-feat-stat">
-        <span class="proj-feat-stat-label">STACK</span>
-        <span class="proj-feat-stat-val">Next.js · Supabase</span>
+      <div class="proj-feat-side">
+        <div class="proj-feat-stat">
+          <span class="proj-feat-stat-label" data-es="TIPO" data-en="TYPE">TIPO</span>
+          <span class="proj-feat-stat-val" data-es="Sitio web" data-en="Website">Sitio web</span>
+        </div>
+        <div class="proj-feat-stat">
+          <span class="proj-feat-stat-label" data-es="ROL" data-en="ROLE">ROL</span>
+          <span class="proj-feat-stat-val" data-es="Dev solo" data-en="Solo dev">Dev solo</span>
+        </div>
+        <div class="proj-feat-stat">
+          <span class="proj-feat-stat-label" data-es="ESTADO" data-en="STATUS">ESTADO</span>
+          <span class="proj-feat-stat-val" data-es="Entregado" data-en="Delivered">Entregado</span>
+        </div>
+        <div class="proj-feat-stat">
+          <span class="proj-feat-stat-label">STACK</span>
+          <span class="proj-feat-stat-val">HTML · CSS · JS</span>
+        </div>
       </div>
     </div>
   </div>
@@ -845,6 +900,9 @@ footer{
   <div class="proj-grid reveal">
 
     <div class="proj-item">
+      <div class="proj-thumb">
+        <img src="assets/projects/tienda.webp" alt="Tienda screenshot" loading="lazy" onerror="this.style.display='none'">
+      </div>
       <span class="proj-num">03</span>
       <p class="proj-name">Tienda</p>
       <p class="proj-desc"
@@ -860,6 +918,9 @@ footer{
     </div>
 
     <div class="proj-item">
+      <div class="proj-thumb">
+        <img src="assets/projects/forrajeria.webp" alt="Forrajería screenshot" loading="lazy" onerror="this.style.display='none'">
+      </div>
       <span class="proj-num">04</span>
       <p class="proj-name">Forrajería</p>
       <p class="proj-desc"
@@ -874,6 +935,9 @@ footer{
     </div>
 
     <div class="proj-item">
+      <div class="proj-thumb">
+        <img src="assets/projects/ruta-38.webp" alt="Ruta 38 screenshot" loading="lazy" onerror="this.style.display='none'">
+      </div>
       <span class="proj-num">05</span>
       <p class="proj-name" data-es="Ruta 38 Repuestos — POS" data-en="Ruta 38 Auto Parts — POS">Ruta 38 Repuestos — POS</p>
       <p class="proj-desc"
@@ -888,6 +952,9 @@ footer{
     </div>
 
     <div class="proj-item">
+      <div class="proj-thumb">
+        <img src="assets/projects/agenda.webp" alt="Agenda Psicología screenshot" loading="lazy" onerror="this.style.display='none'">
+      </div>
       <span class="proj-num">06</span>
       <p class="proj-name" data-es="Agenda Psicología" data-en="Psychology Agenda">Agenda Psicología</p>
       <p class="proj-desc"
@@ -902,6 +969,9 @@ footer{
     </div>
 
     <div class="proj-item">
+      <div class="proj-thumb">
+        <img src="assets/projects/don-florencio.webp" alt="Don Florencio screenshot" loading="lazy" onerror="this.style.display='none'">
+      </div>
       <span class="proj-num">07</span>
       <p class="proj-name" data-es="Don Florencio — Catálogo" data-en="Don Florencio — Catalog">Don Florencio — Catálogo</p>
       <p class="proj-desc"
